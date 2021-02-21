@@ -16,6 +16,7 @@ Requires:
 ## Global requirements
 
 * REQ_SEG_0010: System clock value shall be passed as a generic to the module, so that it can be used in the internal calculations.
+* REQ_SEG_0020: Reset shall be asynchronous. During reset all registers shall be filled with zeroes.
 
 ## counter_lib
 
@@ -27,8 +28,8 @@ Requires:
 * REQ_SEG_0124: Counter module shall count only when it is enabled.
 * REQ_SEG_0122: Counter module shall update internal preload value only when the rising edge of the enable signal has been detected.
 * REQ_SEG_0123: Counter module shall continue counting from the last value after it has been re-enabled.
-* REQ_SEG_0130: Counter module shall be reset by a dedicated signal. 
-* REQ_SEG_0131: Counter module shall stop counting and reset counter value after reset signal has been detected.
+* REQ_SEG_0130: Counter module shall be reset by a dedicated signal. This shall a separate signal from the global reset.
+* REQ_SEG_0131: Counter module shall stop counting when reset signal has been detected.
 
 TODO:
 * Code documentation available from github (Read the Docs?)
