@@ -13,11 +13,6 @@ Requires:
 
 # Module level description
 
-## Global requirements
-
-* REQ_SEG_0010: System clock value shall be passed as a generic to the module, so that it can be used in the internal calculations.
-* REQ_SEG_0020: Reset shall be asynchronous. During reset all registers shall be filled with zeroes.
-
 TODO:
 * Code documentation available from github (Read the Docs?)
 * GHDL support
