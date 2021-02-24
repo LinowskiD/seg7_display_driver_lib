@@ -21,15 +21,18 @@ architecture tb of counter_tb is
   signal dut_clk    : std_logic := '0';
   signal dut_rst_n  : std_logic := '0';
   signal dut_done   : std_logic;
+  signal dut_busy   : std_logic;
   signal dut_counter_en : std_logic := '0';
   signal dut_counter_rst : std_logic := '0';
 
   signal dut_counter_pre : std_logic_vector(c_preload_bit_size - 1 downto 0) := (others => '0');
 
 begin
+  
   main : process
   alias spy_dut_counter is << signal .counter_tb.uut.counter : unsigned >>;
   variable v_preload : std_logic_vector(c_preload_bit_size - 1 downto 0) := std_logic_vector(to_unsigned(0, c_preload_bit_size));
+  
   begin
     test_runner_setup(runner, runner_cfg);
     while test_suite loop
@@ -41,16 +44,37 @@ begin
         check_equal(dut_rst_n, '0', "Reset shall be active");
         wait until rising_edge(dut_clk);
         check_equal(dut_done, '0', "done signal shall be 0 in reset");
+        check_equal(dut_busy, '0', "busy signal shall be 0 in reset");
         check_equal(spy_dut_counter, to_unsigned(0, c_preload_bit_size), "Internal counter shall be all zeroes");
-      elsif run("test_0003_preload_value_loading_at_start") then
-        info("* REQ_SEG_0110");
+      elsif run("test_0003_busy_when_started") then
         info("* REQ_SEG_0120");
+        info("* REQ_SEG_0124");
         v_preload := std_logic_vector(to_unsigned(10, c_preload_bit_size));
         info("Disabling reset and setting preload value");
         dut_rst_n <= '1';
         dut_counter_pre <= v_preload;
         wait until rising_edge(dut_clk);
-        
+        info("Enabling counter");
+        dut_counter_en <= '1';
+        wait until rising_edge(dut_clk);
+        check_equal(dut_busy, '1', "busy signal shall be set to 1 after counter enabling");
+      elsif run("test_0004_count_from_10") then
+        info("* REQ_SEG_0110");
+        info("* REQ_SEG_0111");
+        info("* REQ_SEG_0112");
+        v_preload := std_logic_vector(to_unsigned(10, c_preload_bit_size));
+        dut_rst_n <= '1';
+        dut_counter_pre <= v_preload;
+        wait until rising_edge(dut_clk);
+        dut_counter_en <= '1';
+        for index in 0 to 9 loop
+          wait until rising_edge(dut_clk);
+        end loop;
+        check_equal(dut_busy, '0', "busy signal shall be set to 0 after counter finish");
+        check_equal(dut_done, '1', "done signal shall be set to 1 after counter finish");
+        wait until rising_edge(dut_clk);
+        check_equal(dut_done, '0', "done signal shall be set to 0 after one clock cycle");
+
       end if;
     end loop;
     test_runner_cleanup(runner); -- Simulation ends here
@@ -69,6 +93,7 @@ begin
       i_cnt_en => dut_counter_en,
       i_cnt_rst => dut_counter_rst,
       i_cnt_pre => dut_counter_pre,
+      o_cnt_busy => dut_busy,
       o_cnt_done => dut_done
     );
 end architecture;
