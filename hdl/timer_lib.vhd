@@ -33,6 +33,7 @@ begin
   o_busy <= busy;
 
   p_cnt : process (i_rst_n, i_clk)
+    variable v_preload_val : std_logic_vector(g_preload_bit_size - 1 downto 0);
   begin
 
     if (i_rst_n = '0') then
@@ -41,18 +42,28 @@ begin
       preload_val <= (others => '1');
       counter <= (others => '0');
     elsif rising_edge(i_clk) then
-      counter <= unsigned(preload_val);
-      if (i_en = '1') or (busy = '1') then
-        busy <= '1';
-        done <= '0';
+      -- counter <= unsigned(preload_val);
+      if (i_load = '1') then
+        v_preload_val := i_load_val;
+      else
+        v_preload_val := preload_val;
+      end if;
+      if (busy = '0') then
+        if (i_en = '1') then
+          busy <= '1';
+          done <= '0';
+          counter <= unsigned(v_preload_val);
+        end if;
+      else
+        -- busy
         if (counter /= 0) then
           counter <= counter - 1;
         else
           done <= '1';
-          counter <= (others => '1'); -- TODO:  handle preload properly
+          busy <= '0';
         end if;
       end if;
-     
+      preload_val <= v_preload_val;
     end if;
 
   end process;
