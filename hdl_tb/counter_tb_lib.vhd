@@ -135,7 +135,6 @@ begin
 
   uut : entity seg7_display_driver_lib.counter_rtl
     generic map (
-      g_system_clock_in_hz => c_system_clock_in_hz,
       g_preload_bit_size => c_preload_bit_size
     )
     port map (

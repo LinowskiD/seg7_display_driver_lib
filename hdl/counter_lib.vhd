@@ -4,7 +4,6 @@ use ieee.numeric_std.all;
 
 entity counter_rtl is
   generic (
-    g_system_clock_in_hz : natural;
     g_preload_bit_size : natural
   );
   port (
@@ -21,7 +20,6 @@ end entity counter_rtl;
 
 architecture rtl of counter_rtl is
 
-  constant c_system_clock_in_hz : natural := g_system_clock_in_hz;
   signal done : std_logic;
   signal busy : std_logic;
   signal preload_val : std_logic_vector(g_preload_bit_size - 1 downto 0);
