@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity timer_rtl is
+entity counter_rtl is
   generic (
     g_system_clock_in_hz : natural;
     g_preload_bit_size : natural
@@ -17,9 +17,9 @@ entity timer_rtl is
     o_busy      : out std_logic;
     o_done      : out std_logic
   );
-end entity timer_rtl;
+end entity counter_rtl;
 
-architecture rtl of timer_rtl is
+architecture rtl of counter_rtl is
 
   constant c_system_clock_in_hz : natural := g_system_clock_in_hz;
   signal done : std_logic;

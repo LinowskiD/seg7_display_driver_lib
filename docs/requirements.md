@@ -4,7 +4,7 @@
 * REQ_SEG_0010: System clock value shall be passed as a generic to the module, so that it can be passed to the submodules, like time counter.
 * REQ_SEG_0020: Reset shall be asynchronous. During reset all registers shall be filled with zeroes.
 
-<!-- ## timer_lib
+<!-- ## counter_lib
 * REQ_SEG_0100: System clock value shall be passed as a generic to the module, so that it can be used in the internal calculations.
 * REQ_SEG_0101: Preload value bit size shall be passed as a generic to the module.
 * REQ_SEG_0110: Counting shall be enabled when 'enable' signal has been provided for at least one clock cycle.
