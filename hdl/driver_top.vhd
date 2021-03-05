@@ -8,15 +8,14 @@ use seg7_display_driver_lib.defines_pkg.all;
 
 entity driver_top is
   generic (
-    g_number_of_digits : natural := c_number_of_digits_default;
-    g_freq_divider : natural := 1  -- TODO: properly define how this mechanism should work
+    g_number_of_digits : natural := c_number_of_digits_default
   );
   port (
     i_clk : in std_logic;
     i_rst_n : in std_logic;
-    i_digits : in std_logic_vector((4 * g_number_of_digits - 1) downto 0);
-    o_segments : out std_logic_vector(6 downto 0);
-    o_digit_select : out std_logic_vector((g_number_of_digits - 1) downto 0)
+    i_digits : in t_digits(0 to (g_number_of_digits - 1));
+    o_segments : out t_segments;
+    o_digit_select : out t_digit_select(0 to (g_number_of_digits - 1))
   );
 end entity driver_top;
 
