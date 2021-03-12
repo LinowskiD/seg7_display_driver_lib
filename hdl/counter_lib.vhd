@@ -40,13 +40,15 @@ begin
       preload_val <= (others => '1');
       counter <= (others => '0');
     elsif rising_edge(i_clk) then
-      -- counter <= unsigned(preload_val);
       if (i_load = '1') then
         v_preload_val := i_load_val;
       else
         v_preload_val := preload_val;
       end if;
-      if (busy = '0') then
+      if (i_clear = '1') then
+        busy <= '0';
+        counter <= (others => '0');
+      elsif (busy = '0') then
         if (i_en = '1') then
           busy <= '1';
           done <= '0';
