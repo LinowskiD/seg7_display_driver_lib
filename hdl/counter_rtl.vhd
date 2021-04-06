@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity counter_rtl is
+entity counter is
   generic (
     g_preload_bit_size : natural
   );
@@ -16,9 +16,9 @@ entity counter_rtl is
     o_busy      : out std_logic;
     o_done      : out std_logic
   );
-end entity counter_rtl;
+end entity counter;
 
-architecture rtl of counter_rtl is
+architecture rtl of counter is
 
   signal done : std_logic;
   signal busy : std_logic;
