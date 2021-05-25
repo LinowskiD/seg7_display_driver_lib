@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: VUnit/vunit_action@master
+      - name: Run VUnit tests
+        uses: ./
         with:
           cmd: script/run.py
