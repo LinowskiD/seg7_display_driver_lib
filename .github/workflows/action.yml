@@ -5,9 +5,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: ghdl/vunit:mcode
     steps:
       - uses: actions/checkout@v2
-      - name: Run VUnit tests
-        uses: ./
-        with:
-          cmd: script/run.py
+      - run: script/run.py
