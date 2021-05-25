@@ -3,11 +3,10 @@ on:
   push:
   pull_request:
 jobs:
-  action:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run VUnit tests
-        uses: ./
+      - uses: VUnit/vunit_action@master
         with:
           cmd: script/run.py
