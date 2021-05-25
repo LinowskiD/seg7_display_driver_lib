@@ -6,14 +6,14 @@ library seg7_display_driver_lib;
 use seg7_display_driver_lib.types_pkg.all;
 use seg7_display_driver_lib.defines_pkg.all;
 
-entity seq_ctrl is
+entity seg_ctrl is
   port (
     i_digit    : in  t_digit;
     o_segments : out t_segments
   );
-end entity seq_ctrl;
+end entity seg_ctrl;
 
-architecture rtl of seq_ctrl is
+architecture rtl of seg_ctrl is
 
   signal segments : t_segments;
 
