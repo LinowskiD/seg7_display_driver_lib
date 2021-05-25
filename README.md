@@ -1,3 +1,4 @@
+[![](https://github.com/LinowskiD/seg7_display_driver_lib/workflows/VUnit%20Tests/badge.svg)](https://github.com/LinowskiD/seg7_display_driver_lib/actions)
 # seg7_display_driver_lib
 Seven segment display driver with multiple digit support.  
 Written in VHDL, project organized and verified with VUnit.  
