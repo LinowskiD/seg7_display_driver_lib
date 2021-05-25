@@ -7,8 +7,7 @@ library vunit_lib;
 context vunit_lib.vunit_context;
 
 library seg7_display_driver_lib;
-use seg7_display_driver_lib.types_pkg.all;
-use seg7_display_driver_lib.defines_pkg.all;
+
 
 entity seg_ctrl_tb is
   generic (runner_cfg : string := runner_cfg_default);
@@ -20,8 +19,8 @@ architecture tb of seg_ctrl_tb is
   constant c_clk_period       : time := 10**3 * 1 ms / c_system_clock_in_hz;
 
   signal dut_clk    : std_logic := '0';
-  signal dut_digit    : t_digit;
-  signal dut_segments    : t_segments;
+  signal dut_digit    : seg7_display_driver_lib.types_pkg.t_digit;
+  signal dut_segments    : seg7_display_driver_lib.types_pkg.t_segments;
 
 begin
   
