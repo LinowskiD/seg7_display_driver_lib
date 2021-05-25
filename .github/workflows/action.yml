@@ -8,4 +8,4 @@ jobs:
     container: ghdl/vunit:mcode
     steps:
       - uses: actions/checkout@v2
-      - run: script/run.py
+      - run: py script/run.py
