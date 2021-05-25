@@ -9,7 +9,7 @@ context vunit_lib.vunit_context;
 library seg7_display_driver_lib;
 
 entity counter_tb is
-  generic (runner_cfg : string);
+  generic (runner_cfg : string := runner_cfg_default);
 end entity;
 
 architecture tb of counter_tb is
@@ -146,7 +146,7 @@ begin
 
   dut_clk <= not dut_clk after (c_clk_period/2);
 
-  uut : entity seg7_display_driver_lib.counter
+  uut : entity seg7_display_driver_lib.counter(rtl)
     generic map (
       g_preload_bit_size => c_preload_bit_size
     )
