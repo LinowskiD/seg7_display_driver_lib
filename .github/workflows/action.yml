@@ -7,7 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Check workspace
+        run: ls
       - uses: VUnit/vunit_action@v0.1.0
-        working-directory: ./seq7_display_driver_lib
         with:
+          working-directory: seq7_display_driver_lib
           run_file: script/run.py
