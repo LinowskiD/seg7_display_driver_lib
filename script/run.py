@@ -13,7 +13,7 @@ DUT_PATH = ROOT / "hdl"
 # Sources path for TB
 TEST_PATH = ROOT / "hdl_tb"
 # MODULE_NAME
-MODULE_NAME = os.path.basename(ROOT).split("_lib")[0]
+MODULE_NAME = "seg7_display_driver"
 # Append arguments to VUnit call
 sys.argv.append("-o")
 sys.argv.append(f"{ROOT / WORK}")
