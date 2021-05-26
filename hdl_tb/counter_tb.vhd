@@ -6,8 +6,6 @@ use ieee.math_real.all;
 library vunit_lib;
 context vunit_lib.vunit_context;
 
-library seg7_display_driver_lib;
-
 entity counter_tb is
   generic (runner_cfg : string := runner_cfg_default);
 end entity;
