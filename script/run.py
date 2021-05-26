@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import os
 
+# os.environ['VUNIT_SIMULATOR'] = 'ghdl'
 # ROOT
 ROOT = Path(__file__).resolve().parents[1]
 # WORK
