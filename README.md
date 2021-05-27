@@ -3,7 +3,7 @@
 Seven segment display driver with multiple digit support.  
 Written in VHDL, project organized and verified with VUnit.  
 Project mostly considered as a VUnit playgroud for now. In the future it is expected to be a part of a much larger system inside actual FPGA. 
-Recently added GDHL simulation support, mainly for github actions, but it is... eh... restricting in comparison to Modelsim or Riviera, especially regarding "signal spies" used in verification. I will write more about this on a later date.
+Recently added GHDL simulation support, mainly for github actions, but it is... eh... restricting in comparison to Modelsim or Riviera, especially regarding "signal spies" used in verification. I will write more about this on a later date.
 
 ## Features:
 * Handles displays consisting up to 4 digits (TBD) by providing 4 (TBD) signals to control anode/cathode switching.
