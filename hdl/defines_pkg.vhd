@@ -7,7 +7,9 @@ use seg7_display_driver_lib.types_pkg.all;
 
 package defines_pkg is
 
+  constant c_clock_frequency_default : natural := 100_000_000;
   constant c_number_of_digits_default : natural := 4;
+  constant c_digit_change_interval_default : natural := 1;
   constant c_seg_pos : t_segment_pos := (
     ca => 6,
     cb => 5,
