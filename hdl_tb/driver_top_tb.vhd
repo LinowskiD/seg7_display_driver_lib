@@ -27,23 +27,42 @@ architecture tb of driver_top_tb is
   signal dut_segments  : t_segments;
   signal dut_digit_select : t_digit_select((c_number_of_digits - 1) downto 0);
 
+  constant separator : string := "-------------------------------------------------------------------";
+  procedure walk (
+    signal   clk   : in std_logic;
+    constant steps : natural := 1
+    ) is
+  begin
+    if steps /= 0 then
+      for step in 0 to steps - 1 loop
+        wait until rising_edge(clk);
+      end loop;
+    end if;
+  end procedure;
+
 begin
   
   main : process
   begin
     test_runner_setup(runner, runner_cfg);
     while test_suite loop
-      if run("test_0002_values_in_reset") then
-        check_equal(dut_rst_n, '0', "Reset shall be active");
-        wait until rising_edge(dut_clk);
-        check_equal(dut_segments.ca, '0', "segment.ca shall be reset");
-        check_equal(dut_segments.cb, '0', "segment.cb shall be reset");
-        check_equal(dut_segments.cc, '0', "segment.cc shall be reset");
-        check_equal(dut_segments.cd, '0', "segment.cd shall be reset");
-        check_equal(dut_segments.ce, '0', "segment.ce shall be reset");
-        check_equal(dut_segments.cf, '0', "segment.cf shall be reset");
-        check_equal(dut_segments.cg, '0', "segment.cg shall be reset");
-
+      if run("test_0001_output_ports_in_reset") then
+        info(separator);
+        info("TEST CASE: test_0001_output_ports_in_reset");
+        info(separator);
+        check_equal(dut_rst_n, '0', "for reset to be active");
+        walk(dut_clk, 1);
+        check_equal(dut_segments.ca, '0', result("for segment.ca when in reset"));
+        check_equal(dut_segments.cb, '0', result("for segment.cb when in reset"));
+        check_equal(dut_segments.cc, '0', result("for segment.cc when in reset"));
+        check_equal(dut_segments.cd, '0', result("for segment.cd when in reset"));
+        check_equal(dut_segments.ce, '0', result("for segment.ce when in reset"));
+        check_equal(dut_segments.cf, '0', result("for segment.cf when in reset"));
+        check_equal(dut_segments.cg, '0', result("for segment.cg when in reset"));
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select when in reset"));
+        end loop;
+        info("===== TEST CASE FINISHED =====");
         -- check_equal(o_digit_select, '0', "TBD");
         -- info("* REQ_SEG_0101");
         -- check_equal(spy_dut_counter'length, c_preload_bit_size, "g_preload_bit_size should match passed value");

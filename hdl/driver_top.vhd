@@ -35,8 +35,6 @@ architecture rtl of driver_top is
 
 begin
   
-
-  
   -- Extract currently processed digit
   digit <= i_digits(digit_nmb);
   
@@ -54,5 +52,6 @@ begin
   end process;
 
   o_segments <= segments when i_rst_n = '1' else (others => '0');
+  o_digit_select <= (others => '0'); -- TODO
 
 end architecture rtl;
