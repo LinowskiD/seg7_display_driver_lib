@@ -23,20 +23,51 @@ end entity driver_top;
 
 architecture rtl of driver_top is
 
+  function generics_verification return boolean is
+  begin
+    assert (g_clock_frequency > 0)
+      report "g_clock_frequency must be greater than 0!"
+      severity failure;
+    assert (g_number_of_digits > 0)
+      report "g_number_of_digits must be greater than 0!"
+      severity failure;
+    assert (g_digit_change_interval > 0)
+      report "g_digit_change_interval must be greater than 0!"
+      severity failure;
+    return true;
+  end function;
+  constant c_safe: boolean := generics_verification;
+
   constant c_clock_cycles_per_digit_change : natural := (g_clock_frequency / 1_000) * g_digit_change_interval;
   
   signal segments : t_segments;
-
   signal digit : t_digit;
-
   signal digit_nmb : natural range 0 to (g_number_of_digits - 1);
-
   signal digit_change_cnt : natural range 0 to (c_clock_cycles_per_digit_change - 1);
 
 begin
   
   -- Extract currently processed digit
   digit <= i_digits(digit_nmb);
+
+  p_digit_change : process(i_rst_n, i_clk)
+  begin
+    if (i_rst_n = '0') then
+      digit_nmb <= 0;
+      digit_change_cnt <= 0;
+    elsif rising_edge(i_clk) then
+      if (digit_change_cnt < c_clock_cycles_per_digit_change - 1) then
+        digit_change_cnt <= digit_change_cnt + 1;
+      else
+        digit_change_cnt <= 0;
+        if (digit_nmb < g_number_of_digits - 1) then
+          digit_nmb <= digit_nmb + 1;
+        else
+          digit_nmb <= 0;
+        end if;
+      end if;
+    end if;
+  end process;
   
   p_encoder : process (digit)
     variable v_digit : natural;
@@ -51,7 +82,13 @@ begin
     segments.cg <= c_digit_map_to_seg(v_digit)(c_seg_pos.cg);
   end process;
 
-  o_segments <= segments when i_rst_n = '1' else (others => '0');
-  o_digit_select <= (others => '0'); -- TODO
+  -- Assign outputs
+  o_segments <= (others => '0') when i_rst_n = '0' else segments;
+
+  GEN_MUX: for index in 0 to g_number_of_digits - 1 generate
+    o_digit_select(index) <= '0' when (i_rst_n = '0') else 
+                             '0' when (digit_nmb /= index) else '1';
+  end generate GEN_MUX;
+
 
 end architecture rtl;

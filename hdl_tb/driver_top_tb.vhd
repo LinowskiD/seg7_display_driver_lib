@@ -49,9 +49,10 @@ begin
       if run("test_0001_output_ports_in_reset") then
         info(separator);
         info("TEST CASE: test_0001_output_ports_in_reset");
+        info("REQ_SEG_0000");
         info(separator);
-        check_equal(dut_rst_n, '0', "for reset to be active");
-        walk(dut_clk, 1);
+        info("Verify state in reset");
+        check_equal(dut_rst_n, '0', "for reset to be enabled");
         check_equal(dut_segments.ca, '0', result("for segment.ca when in reset"));
         check_equal(dut_segments.cb, '0', result("for segment.cb when in reset"));
         check_equal(dut_segments.cc, '0', result("for segment.cc when in reset"));
@@ -61,6 +62,46 @@ begin
         check_equal(dut_segments.cg, '0', result("for segment.cg when in reset"));
         for digit_nmb in 0 to c_number_of_digits - 1 loop
           check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select when in reset"));
+        end loop;
+        info("Verify state in after entering reset during operation");
+        info("Disable reset and provide input");
+        dut_rst_n <= '1';
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          dut_digits(digit_nmb) <= X"F";
+        end loop;
+        walk(dut_clk, 1);
+        check_equal(dut_digit_select(0), '1', result("for digit_select(0) after reset release"));
+        info("Enable reset once again and wait for a delta cycle");
+        dut_rst_n <= '0';
+        wait for 1 ps;
+        check_equal(dut_segments.ca, '0', result("for segment.ca when in reset"));
+        check_equal(dut_segments.cb, '0', result("for segment.cb when in reset"));
+        check_equal(dut_segments.cc, '0', result("for segment.cc when in reset"));
+        check_equal(dut_segments.cd, '0', result("for segment.cd when in reset"));
+        check_equal(dut_segments.ce, '0', result("for segment.ce when in reset"));
+        check_equal(dut_segments.cf, '0', result("for segment.cf when in reset"));
+        check_equal(dut_segments.cg, '0', result("for segment.cg when in reset"));
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select when in reset"));
+        end loop;
+        info("===== TEST CASE FINISHED =====");
+      elsif run("test_0002_digit_change") then
+        info(separator);
+        info("TEST CASE: test_0002_digit_change");
+        info(separator);
+        info("Disable reset");
+        dut_rst_n <= '1';
+        walk(dut_clk, 1);
+        check_equal(dut_digit_select(0), '1', result("for digit_select(0) after start"));
+        for digit_nmb in 1 to c_number_of_digits - 1 loop
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
+        end loop;
+        info("Wait for digit change");
+        wait until dut_digit_select(1) = '1' for 1 ms;
+        check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
+        check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
+        for digit_nmb in 2 to c_number_of_digits - 1 loop
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
         end loop;
         info("===== TEST CASE FINISHED =====");
         -- check_equal(o_digit_select, '0', "TBD");
