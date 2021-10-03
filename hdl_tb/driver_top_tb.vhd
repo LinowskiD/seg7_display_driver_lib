@@ -43,6 +43,7 @@ architecture tb of driver_top_tb is
 begin
   
   main : process
+    variable v_time_start : time;
   begin
     test_runner_setup(runner, runner_cfg);
     while test_suite loop
@@ -88,20 +89,47 @@ begin
       elsif run("test_0002_digit_change") then
         info(separator);
         info("TEST CASE: test_0002_digit_change");
+        info("REG_SEG_0010");
+        info("REG_SEG_0020");
+        info("REG_SEG_0030");
+        info("REG_SEG_0050");
+        info("REG_SEG_0060");
+        info("REG_SEG_0070");
         info(separator);
         info("Disable reset");
         dut_rst_n <= '1';
         walk(dut_clk, 1);
+        -- REG_SEG_0060
         check_equal(dut_digit_select(0), '1', result("for digit_select(0) after start"));
         for digit_nmb in 1 to c_number_of_digits - 1 loop
           check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
         end loop;
         info("Wait for digit change");
         wait until dut_digit_select(1) = '1' for 1 ms;
+        v_time_start := now;
         check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
         check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
         for digit_nmb in 2 to c_number_of_digits - 1 loop
-          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+        end loop;
+        -- REQ_SEG_0010
+        -- REQ_SEG_0020
+        -- REQ_SEG_0030
+        -- REG_SEG_0050
+        -- REG_SEG_0070
+        for step_nmb in 2 to 10 loop
+          info("Veifying change no. " & integer'image((step_nmb)));
+          wait for 1 ps;
+          wait until dut_digit_select(step_nmb mod 4 ) = '1' for 1 ms;
+          check_equal(now - v_time_start, 1 ms, "duration check");
+          v_time_start := now;
+          for digit_nmb in 0 to c_number_of_digits - 1 loop
+            if digit_nmb = step_nmb mod 4 then
+              check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+            else
+              check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+            end if;
+          end loop;
         end loop;
         info("===== TEST CASE FINISHED =====");
         -- check_equal(o_digit_select, '0', "TBD");
