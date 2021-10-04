@@ -16,16 +16,20 @@ end entity;
 
 architecture tb of driver_top_tb is
 
+  type t_boolean_array is array (natural range <>) of boolean;
+  
   constant c_system_clock_in_hz : natural := 100_000_000;
   constant c_clk_period       : time := 10**3 * 1 ms / c_system_clock_in_hz;
   constant c_number_of_digits : natural := c_number_of_digits_default;
   constant c_digit_change_interval : natural := 1;
+  constant c_digit_change_interval_ms : time := c_digit_change_interval * 1 ms;
 
   signal dut_clk    : std_logic := '0';
   signal dut_rst_n  : std_logic := '0';
   signal dut_digits  : t_digits((c_number_of_digits - 1) downto 0) := (others => X"0");
   signal dut_segments  : t_segments;
   signal dut_digit_select : t_digit_select((c_number_of_digits - 1) downto 0);
+  signal dut_digit_select_stable : t_boolean_array((c_number_of_digits - 1) downto 0);
 
   constant separator : string := "-------------------------------------------------------------------";
   procedure walk (
@@ -41,6 +45,10 @@ architecture tb of driver_top_tb is
   end procedure;
 
 begin
+
+  GEN_STABLE_CHECK: for index in 0 to c_number_of_digits - 1 generate
+    dut_digit_select_stable(index) <= dut_digit_select(index)'stable(c_digit_change_interval_ms);
+  end generate GEN_STABLE_CHECK;
   
   main : process
     variable v_time_start : time;
@@ -105,7 +113,7 @@ begin
           check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
         end loop;
         info("Wait for digit change");
-        wait until dut_digit_select(1) = '1' for 1 ms;
+        wait until dut_digit_select(1) = '1' for c_digit_change_interval_ms;
         v_time_start := now;
         check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
         check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
@@ -120,8 +128,8 @@ begin
         for step_nmb in 2 to 10 loop
           info("Veifying change no. " & integer'image((step_nmb)));
           wait for 1 ps;
-          wait until dut_digit_select(step_nmb mod 4 ) = '1' for 1 ms;
-          check_equal(now - v_time_start, 1 ms, "duration check");
+          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_ms;
+          check_equal(now - v_time_start, c_digit_change_interval_ms, "duration check");
           v_time_start := now;
           for digit_nmb in 0 to c_number_of_digits - 1 loop
             if digit_nmb = step_nmb mod 4 then
@@ -129,6 +137,7 @@ begin
             else
               check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
             end if;
+            check_equal(dut_digit_select_stable(digit_nmb), true, result("for stability stability check on digit_select(" & integer'image(digit_nmb)) & ")");
           end loop;
         end loop;
         info("===== TEST CASE FINISHED =====");
