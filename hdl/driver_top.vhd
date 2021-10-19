@@ -73,13 +73,7 @@ begin
     variable v_digit : natural;
   begin
     v_digit := to_integer(unsigned(digit));
-    segments.ca <= c_digit_map_to_seg(v_digit)(c_seg_pos.ca);
-    segments.cb <= c_digit_map_to_seg(v_digit)(c_seg_pos.cb);
-    segments.cc <= c_digit_map_to_seg(v_digit)(c_seg_pos.cc);
-    segments.cd <= c_digit_map_to_seg(v_digit)(c_seg_pos.cd);
-    segments.ce <= c_digit_map_to_seg(v_digit)(c_seg_pos.ce);
-    segments.cf <= c_digit_map_to_seg(v_digit)(c_seg_pos.cf);
-    segments.cg <= c_digit_map_to_seg(v_digit)(c_seg_pos.cg);
+    segments <= c_digit_to_seg(v_digit);
   end process;
 
   -- Assign outputs

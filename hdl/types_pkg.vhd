@@ -16,16 +16,7 @@ package types_pkg is
     cf : std_logic;
     cg : std_logic;
   end record;
-  type t_segment_pos is record
-    ca : natural;
-    cb : natural;
-    cc : natural;
-    cd : natural;
-    ce : natural;
-    cf : natural;
-    cg : natural;
-  end record;
-  type t_digit_map_to_seg is array (16#0# to 16#F#) of std_logic_vector(6 downto 0);
+  type t_digit_to_seg is array (16#0# to 16#F#) of t_segments;
 
 
 end package types_pkg;
