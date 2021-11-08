@@ -20,7 +20,6 @@ Recently added GHDL simulation support, mainly for github actions, but it is... 
 * Allows to display different value on each digit.
 * Allows to display hexadecimal value between 0x0 and 0xF - provided as a Binary Coded Decimal (BCD).
 * Digits are being lit one at a time in a sequence.
-* Configurable digit "light" and "dim" state time when switching multiple digits - this ensures that even with real components delay, no two digits are driven at the same time (Example: lit D1 -> dim D1 -> lit D2 -> dim D2 -> lit D1 -> ...).
 * Hardware independent by design - provides only control logic. Selection betwen Common Cathode and Common Anode control is realized on the higher design level by a dedicated interface.
 
 ## Project requirements for simulation
@@ -49,9 +48,11 @@ Recently added GHDL simulation support, mainly for github actions, but it is... 
 | o_segments     | OUT       | std_logic_vector       | Controls digit's segments                      |
 | o_digit_select | OUT       | std_logic_vector       | Controls which digit is enabled at this moment |
 
-| Generic name       | Type    | Description                                     |
-|--------------------|---------|-------------------------------------------------|
-| g_number_of_digits | natural | Number of digits from which display is composed |
+| Generic name            | Type    | Description                                                    |
+|-------------------------|---------|----------------------------------------------------------------|
+| g_clock_frequency       | natural | Main clock frequency used for digit period calculation (in Hz) |
+| g_number_of_digits      | natural | Number of digits from which display is composed                |
+| g_digit_change_interval | natural | Interval between digit change (in miliseconds)                 |
 
 ## Detailed architecture
 TBD
@@ -59,5 +60,6 @@ TBD
 # Module level description
 
 TODO:
+* Configurable digit "light" and "dim" state time when switching multiple digits - this ensures that even with real components delay, no two digits are driven at the same time (Example: lit D1 -> dim D1 -> lit D2 -> dim D2 -> lit D1 -> ...).
 * Dim/lit time control signals and relevant generics contraining them.
 * Code documentation available from github (Read the Docs?).
