@@ -60,29 +60,29 @@ architecture tb of driver_top_tb is
     -- variable v_line_buffer : string(1 to 6) := "      ";
   begin
     -- prepare buffer
-    if (segments.ca = '0') then
+    if (segments.ca = '1') then
       v_screen_buff(0)(2 to 5) := "####";
     end if;
-    if (segments.cb = '0') then
+    if (segments.cb = '1') then
       v_screen_buff(1)(6) := '#';
       v_screen_buff(2)(6) := '#';
     end if;
-    if (segments.cc = '0') then
+    if (segments.cc = '1') then
       v_screen_buff(4)(6) := '#';
       v_screen_buff(5)(6) := '#';
     end if;
-    if (segments.cd = '0') then
+    if (segments.cd = '1') then
       v_screen_buff(6)(2 to 5) := "####";
     end if;
-    if (segments.ce = '0') then
+    if (segments.ce = '1') then
       v_screen_buff(4)(1) := '#';
       v_screen_buff(5)(1) := '#';
     end if;
-    if (segments.cf = '0') then
+    if (segments.cf = '1') then
       v_screen_buff(1)(1) := '#';
       v_screen_buff(2)(1) := '#';
     end if;
-    if (segments.cg = '0') then
+    if (segments.cg = '1') then
       v_screen_buff(3)(2 to 5) := "####";
     end if;
     -- display buffer
