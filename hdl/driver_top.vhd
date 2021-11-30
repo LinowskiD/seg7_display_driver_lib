@@ -31,7 +31,7 @@ architecture rtl of driver_top is
   );
 
   constant c_clock_cycles_per_digit_change : natural := (g_clock_frequency / 1_000) * g_digit_change_interval; -- TODO: 1_000 -> constant
-  -- constant c_clock_cycles_per_digit_active : natural := (c_clock_cycles_per_digit_change * g_digit_on_off_ratio) / 100; -- TODO: 100 -> constant
+  constant c_clock_cycles_per_digit_active : natural := (c_clock_cycles_per_digit_change * g_digit_on_off_ratio) / 100; -- TODO: 100 -> constant
   
   signal digit : t_digit;
   signal digit_nmb : natural range 0 to (g_number_of_digits - 1);
@@ -49,13 +49,13 @@ begin
       digit_change_cnt <= 0;
       digit_active <= '1';
     elsif rising_edge(i_clk) then
-      -- if (digit_change_cnt < c_clock_cycles_per_digit_active - 1) then
-      --   digit_active <= '1';
-      -- else
-      --   digit_active <= '0';
-      -- end if;
       if (digit_change_cnt < c_clock_cycles_per_digit_change - 1) then
         digit_change_cnt <= digit_change_cnt + 1;
+        if (digit_change_cnt < c_clock_cycles_per_digit_active - 1) then
+          digit_active <= '1';
+        else
+          digit_active <= '0';
+        end if;
       else
         digit_change_cnt <= 0;
         if (digit_nmb < g_number_of_digits - 1) then
