@@ -30,15 +30,15 @@ architecture rtl of driver_top is
     g_digit_on_off_ratio
   );
 
-  constant c_clock_cycles_per_digit_change : natural := (g_clock_frequency / 1_000) * g_digit_change_interval;
+  constant c_clock_cycles_per_digit_change : natural := (g_clock_frequency / 1_000) * g_digit_change_interval; -- TODO: 1_000 -> constant
+  -- constant c_clock_cycles_per_digit_active : natural := (c_clock_cycles_per_digit_change * g_digit_on_off_ratio) / 100; -- TODO: 100 -> constant
   
-  signal segments : t_segments;
   signal digit : t_digit;
   signal digit_nmb : natural range 0 to (g_number_of_digits - 1);
+  signal digit_active : std_logic;
   signal digit_change_cnt : natural range 0 to (c_clock_cycles_per_digit_change - 1);
 
 begin
-  
   -- Extract currently processed digit
   digit <= i_digits(digit_nmb);
 
@@ -47,7 +47,13 @@ begin
     if (i_rst_n = '0') then
       digit_nmb <= 0;
       digit_change_cnt <= 0;
+      digit_active <= '1';
     elsif rising_edge(i_clk) then
+      -- if (digit_change_cnt < c_clock_cycles_per_digit_active - 1) then
+      --   digit_active <= '1';
+      -- else
+      --   digit_active <= '0';
+      -- end if;
       if (digit_change_cnt < c_clock_cycles_per_digit_change - 1) then
         digit_change_cnt <= digit_change_cnt + 1;
       else
@@ -61,18 +67,14 @@ begin
     end if;
   end process;
   
-  p_encoder : process (digit)
-    variable v_digit : natural;
-  begin
-    v_digit := to_integer(unsigned(digit));
-    segments <= c_digit_to_seg(v_digit);
-  end process;
-
   -- Assign outputs
-  o_segments <= (others => '0') when i_rst_n = '0' else segments;
+
+  o_segments <= (others => '0') when (i_rst_n = '0') else 
+                c_digit_to_seg(to_integer(unsigned(digit)));
 
   GEN_MUX: for index in 0 to g_number_of_digits - 1 generate
     o_digit_select(index) <= '0' when (i_rst_n = '0') else 
+                             '0' when (digit_active = '0') else
                              '0' when (digit_nmb /= index) else '1';
   end generate GEN_MUX;
 

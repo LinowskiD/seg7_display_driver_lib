@@ -57,9 +57,7 @@ package body driver_tb_pkg is
   procedure display_segments (
     signal segments : in t_segments
     ) is
-      -- 6 x 7 (line x col)
     variable v_screen_buff : t_char_matrix(0 to 6)(1 to 6) := (others => "      ");
-    -- variable v_line_buffer : string(1 to 6) := "      ";
   begin
     -- prepare buffer
     if (segments.ca = '1') then
