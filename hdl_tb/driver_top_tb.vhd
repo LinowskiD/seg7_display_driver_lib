@@ -7,7 +7,6 @@ library vunit_lib;
 context vunit_lib.vunit_context;
 
 library seg7_display_driver_lib;
-use seg7_display_driver_lib.types_pkg.all;
 use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top_tb is

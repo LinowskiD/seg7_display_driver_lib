@@ -3,7 +3,6 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library seg7_display_driver_lib;
-use seg7_display_driver_lib.types_pkg.all;
 use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top is
