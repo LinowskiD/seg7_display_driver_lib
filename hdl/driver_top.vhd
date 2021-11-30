@@ -4,13 +4,14 @@ use ieee.numeric_std.all;
 
 library seg7_display_driver_lib;
 use seg7_display_driver_lib.types_pkg.all;
-use seg7_display_driver_lib.defines_pkg.all;
+use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top is
   generic (
     g_clock_frequency : natural := c_clock_frequency_default; -- in Hz
     g_number_of_digits : natural := c_number_of_digits_default;
-    g_digit_change_interval : natural := c_digit_change_interval_default -- in miliseconds
+    g_digit_change_interval : natural := c_digit_change_interval_default; -- in miliseconds
+    g_digit_on_off_ratio : natural := c_digit_on_off_ratio_default -- in percent
   );
   port (
     i_clk : in std_logic;
@@ -23,20 +24,12 @@ end entity driver_top;
 
 architecture rtl of driver_top is
 
-  function generics_verification return boolean is
-  begin
-    assert (g_clock_frequency > 0)
-      report "g_clock_frequency must be greater than 0!"
-      severity failure;
-    assert (g_number_of_digits > 0)
-      report "g_number_of_digits must be greater than 0!"
-      severity failure;
-    assert (g_digit_change_interval > 0)
-      report "g_digit_change_interval must be greater than 0!"
-      severity failure;
-    return true;
-  end function;
-  constant c_safe: boolean := generics_verification;
+  constant c_safe: boolean := generics_verification(
+    g_clock_frequency,
+    g_number_of_digits,
+    g_digit_change_interval,
+    g_digit_on_off_ratio
+  );
 
   constant c_clock_cycles_per_digit_change : natural := (g_clock_frequency / 1_000) * g_digit_change_interval;
   

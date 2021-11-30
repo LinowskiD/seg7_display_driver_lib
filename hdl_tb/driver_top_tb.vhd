@@ -8,7 +8,7 @@ context vunit_lib.vunit_context;
 
 library seg7_display_driver_lib;
 use seg7_display_driver_lib.types_pkg.all;
-use seg7_display_driver_lib.defines_pkg.all;
+use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top_tb is
   generic (runner_cfg : string := runner_cfg_default);
