@@ -7,17 +7,17 @@ use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top is
   generic (
-    g_clock_frequency : natural := c_clock_frequency_default; -- in Hz
-    g_number_of_digits : natural := c_number_of_digits_default;
+    g_clock_frequency       : natural := c_clock_frequency_default; -- in Hz
+    g_number_of_digits      : natural := c_number_of_digits_default;
     g_digit_change_interval : natural := c_digit_change_interval_default; -- in miliseconds
-    g_digit_on_off_ratio : natural := c_digit_on_off_ratio_default -- in percent
+    g_digit_on_off_ratio    : natural := c_digit_on_off_ratio_default -- in percent
   );
   port (
-    i_clk : in std_logic;
-    i_rst_n : in std_logic;
-    i_digits : in t_digits((g_number_of_digits - 1) downto 0);
-    o_segments : out t_segments;
-    o_digit_select : out t_digit_select((g_number_of_digits - 1) downto 0)
+    i_clk           : in  std_logic;
+    i_rst_n         : in  std_logic;
+    i_digits        : in  std_logic_vector((calc_digits_vec_len(g_number_of_digits) - 1) downto 0);
+    o_segments      : out t_segments;
+    o_digit_select  : out t_digit_select((g_number_of_digits - 1) downto 0)
   );
 end entity driver_top;
 
@@ -40,7 +40,7 @@ architecture rtl of driver_top is
 
 begin
   -- Extract currently processed digit
-  digit <= i_digits(digit_nmb);
+  digit <= i_digits((c_digit_vec_len * digit_nmb + c_digit_vec_len - 1) downto (c_digit_vec_len * digit_nmb));
 
   p_digit_change : process(i_rst_n, i_clk)
   begin

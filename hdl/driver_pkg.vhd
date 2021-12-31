@@ -41,6 +41,7 @@ package driver_pkg is
     16#E# => ('1', '0', '0', '1', '1', '1', '1'),
     16#F# => ('1', '0', '0', '0', '1', '1', '1')
   );
+  constant c_digit_vec_len : natural := 4;
 
   function generics_verification(
     clock_frequency       : natural;
@@ -48,6 +49,10 @@ package driver_pkg is
     digit_change_interval : natural;
     digit_on_off_ratio    : natural
   ) return boolean;
+
+  function calc_digits_vec_len(
+    number_of_digits : natural
+  ) return natural;
 
 end package driver_pkg;
 
@@ -73,6 +78,13 @@ package body driver_pkg is
       report "g_digit_on_off_ratio must be between 1 and 100!"
       severity failure;
     return true;
+  end function;
+
+  function calc_digits_vec_len(
+    number_of_digits : natural
+  ) return natural is
+  begin
+    return c_digit_vec_len * number_of_digits;
   end function;
 
 end package body driver_pkg;
