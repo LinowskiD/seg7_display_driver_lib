@@ -20,13 +20,30 @@ architecture tb of driver_top_tb is
 
   signal dut_clk    : std_logic := '0';
   signal dut_rst_n  : std_logic := '0';
-  signal dut_digits  : t_digits((c_number_of_digits - 1) downto 0) := (others => X"0");
+  signal dut_digits  : std_logic_vector((calc_digits_vec_len(c_number_of_digits) - 1) downto 0) := (others => '0');
   signal dut_segments  : t_segments;
   signal dut_digit_select : t_digit_select((c_number_of_digits - 1) downto 0);
   signal dut_digit_select_stable : t_boolean_array((c_number_of_digits - 1) downto 0);
 
 begin
 
+  dut_clk <= not dut_clk after (c_clk_period/2);
+
+  uut : entity seg7_display_driver_lib.driver_top(rtl)
+    generic map (
+      g_clock_frequency         => c_system_clock_in_hz,
+      g_number_of_digits        => c_number_of_digits,
+      g_digit_change_interval   => c_digit_change_interval,
+      g_digit_on_off_ratio      => c_digit_on_off_ratio
+    )
+    port map (
+      i_clk           => dut_clk,
+      i_rst_n         => dut_rst_n,
+      i_digits        => dut_digits,
+      o_segments      => dut_segments,
+      o_digit_select  => dut_digit_select
+    );
+  
   GEN_STABLE_CHECK: for index in 0 to c_number_of_digits - 1 generate
     dut_digit_select_stable(index) <= dut_digit_select(index)'stable(c_digit_change_interval_ms);
   end generate GEN_STABLE_CHECK;
@@ -38,11 +55,13 @@ begin
     while test_suite loop
       if run("test_0001_output_ports_in_reset") then
         info(separator);
+        info("===== TEST CASE STARTED =====");
         info("TEST CASE: test_0001_output_ports_in_reset");
-        info("REQ_SEG_0000");
+        -- info("REQ_SEG_0000");
         info(separator);
         info("Verify state in reset");
         check_equal(dut_rst_n, '0', "for reset to be enabled");
+        info("* dut_segments");
         check_equal(dut_segments.ca, '0', result("for segment.ca when in reset"));
         check_equal(dut_segments.cb, '0', result("for segment.cb when in reset"));
         check_equal(dut_segments.cc, '0', result("for segment.cc when in reset"));
@@ -50,20 +69,23 @@ begin
         check_equal(dut_segments.ce, '0', result("for segment.ce when in reset"));
         check_equal(dut_segments.cf, '0', result("for segment.cf when in reset"));
         check_equal(dut_segments.cg, '0', result("for segment.cg when in reset"));
+        info("* dut_digit_select");
         for digit_nmb in 0 to c_number_of_digits - 1 loop
           check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select when in reset"));
         end loop;
-        info("Verify state in after entering reset during operation");
-        info("Disable reset and provide input");
+        info("Verify state after re-entering reset");
+        info("Release reset and provide input");
         dut_rst_n <= '1';
         for digit_nmb in 0 to c_number_of_digits - 1 loop
-          dut_digits(digit_nmb) <= X"F";
+          dut_digits(get_slice_range(digit_nmb)'range) <= X"F";
         end loop;
         walk(dut_clk, 1);
+        info("* dut_digit_select");
         check_equal(dut_digit_select(0), '1', result("for digit_select(0) after reset release"));
         info("Enable reset once again and wait for a delta cycle");
         dut_rst_n <= '0';
         wait for 1 ps;
+        info("* dut_segments");
         check_equal(dut_segments.ca, '0', result("for segment.ca when in reset"));
         check_equal(dut_segments.cb, '0', result("for segment.cb when in reset"));
         check_equal(dut_segments.cc, '0', result("for segment.cc when in reset"));
@@ -71,49 +93,50 @@ begin
         check_equal(dut_segments.ce, '0', result("for segment.ce when in reset"));
         check_equal(dut_segments.cf, '0', result("for segment.cf when in reset"));
         check_equal(dut_segments.cg, '0', result("for segment.cg when in reset"));
+        info("* dut_digit_select");
         for digit_nmb in 0 to c_number_of_digits - 1 loop
           check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select when in reset"));
         end loop;
         info("===== TEST CASE FINISHED =====");
       elsif run("test_0002_digit_change") then
         info(separator);
+        info("===== TEST CASE STARTED =====");
         info("TEST CASE: test_0002_digit_change");
-        info("REG_SEG_0010");
-        info("REG_SEG_0020");
-        info("REG_SEG_0030");
-        info("REG_SEG_0050");
-        info("REG_SEG_0060");
-        info("REG_SEG_0070");
+        -- info("REQ_SEG_0000");
         info(separator);
-        info("Disable reset");
+        info("Release reset and provide input");
         dut_rst_n <= '1';
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          dut_digits(get_slice_range(digit_nmb)'range) <= X"F";
+        end loop;
         walk(dut_clk, 1);
-        -- REG_SEG_0060
-        check_equal(dut_digit_select(0), '1', result("for digit_select(0) after start"));
-        for digit_nmb in 1 to c_number_of_digits - 1 loop
-          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in reset"));
+        info("* dut_digit_select");
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          if digit_nmb = 0 then
+            check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") after reset release"));
+          else
+            check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") after reset release"));
+          end if;
         end loop;
-        info("Wait for digit change");
+        info("Wait for 1st digit change - using default ON/OFF ratio (100% ON)");
         wait until dut_digit_select(1) = '1' for c_digit_change_interval_ms;
-        v_time_start := now;
-        check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
-        check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
-        for digit_nmb in 2 to c_number_of_digits - 1 loop
-          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+        for digit_nmb in 0 to c_number_of_digits - 1 loop
+          if digit_nmb = 1 then
+            check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") after reset release"));
+          else
+            check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") after reset release"));
+          end if;
         end loop;
-        -- REQ_SEG_0010
-        -- REQ_SEG_0020
-        -- REQ_SEG_0030
-        -- REG_SEG_0050
-        -- REG_SEG_0070
+        info("Wait for next changes and verify pin state");
+        v_time_start := now;
         for step_nmb in 2 to 10 loop
-          info("Veifying change no. " & integer'image((step_nmb)));
+          info("Verifying change no. " & integer'image((step_nmb)));
           wait for 1 ps;
           wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_ms;
-          check_equal(now - v_time_start, c_digit_change_interval_ms, "duration check");
+          check_equal(now - v_time_start, c_digit_change_interval_ms, result("for digit_select(" & integer'image(step_nmb mod c_number_of_digits) & ")"));
           v_time_start := now;
           for digit_nmb in 0 to c_number_of_digits - 1 loop
-            if digit_nmb = step_nmb mod 4 then
+            if digit_nmb = (step_nmb mod c_number_of_digits) then
               check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
             else
               check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
@@ -268,19 +291,4 @@ begin
     test_runner_cleanup(runner); -- Simulation ends here
   end process;
 
-  dut_clk <= not dut_clk after (c_clk_period/2);
-
-  uut : entity seg7_display_driver_lib.driver_top(rtl)
-    generic map (
-      g_clock_frequency => c_system_clock_in_hz,
-      g_number_of_digits => c_number_of_digits,
-      g_digit_change_interval => c_digit_change_interval
-    )
-    port map (
-      i_clk => dut_clk,
-      i_rst_n => dut_rst_n,
-      i_digits => dut_digits,
-      o_segments => dut_segments,
-      o_digit_select => dut_digit_select
-    );
 end architecture;
