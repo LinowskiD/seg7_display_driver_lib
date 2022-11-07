@@ -1,9 +1,10 @@
-from vunit import VUnit
+from vunit import VUnit, VUnitCLI
 from pathlib import Path
 import sys
 import os
 
 # os.environ['VUNIT_SIMULATOR'] = 'ghdl'
+# os.environ['VUNIT_SIMULATOR'] = 'modelsim'
 # ROOT
 ROOT = Path(__file__).resolve().parents[1]
 # WORK
@@ -15,16 +16,18 @@ TEST_PATH = ROOT / "hdl_tb"
 # MODULE_NAME
 MODULE_NAME = "seg7_display_driver"
 # Append arguments to VUnit call
-sys.argv.append("-o")
-sys.argv.append(f"{ROOT / WORK}")
+# sys.argv.append("-o")
+# sys.argv.append(f"{ROOT / WORK}")
 # Add custom command line argument to standard CLI
 # Beware of conflicts with existing arguments
-#cli = VUnitCLI()
-#cli.parser.add_argument('-s', '--style', action='store_true', help='check VHDL code style according to rules in code_style_conf.yaml') # TBD
-#args = cli.parse_args()
+cli = VUnitCLI()
+# cli.parser.set_defaults(no_color=True)
+cli.parser.set_defaults(output_path=f"{ROOT / WORK}")
+# cli.parser.add_argument('-s', '--style', action='store_true', help='Check VHDL code style according to rules in code_style_conf.yaml') # TBD
+args = cli.parse_args()
 # Create VUnit instance by parsing command line arguments (including custom)
-vu = VUnit.from_argv()
-# vu = VUnit.from_args(args=args)
+# vu = VUnit.from_argv()
+vu = VUnit.from_args(args=args)
 #print(args.style)
 vu.enable_location_preprocessing()
 # Add OSVVM

@@ -14,13 +14,25 @@ package driver_tb_pkg is
   type t_boolean_array is array (natural range <>) of boolean;
   type t_char_matrix is array (natural range <>) of string;
   
-  constant c_system_clock_in_hz : natural := 100_000_000;
-  constant c_clk_period       : time := 10**3 * 1 ms / c_system_clock_in_hz;
-  constant c_number_of_digits : natural := c_number_of_digits_default;
-  constant c_digit_change_interval : natural := 1;
-  constant c_digit_change_interval_ms : time := c_digit_change_interval * 1 ms;
+  constant c_system_clock_in_hz         : natural := 100_000_000;
+  constant c_clk_period                 : time := 10**3 * 1 ms / c_system_clock_in_hz;
+  constant c_number_of_digits           : natural := c_number_of_digits_default;
+  constant c_digit_change_interval      : natural := 100; -- clock cycles
+  constant c_digit_change_interval_time : time := c_clk_period * c_digit_change_interval; -- time
+  constant c_digit_on_off_ratio         : natural := c_digit_on_off_ratio_default;
 
   constant separator : string := "-------------------------------------------------------------------";
+
+  function get_slice(
+    v       : std_logic_vector;
+    pos     : natural;
+    pos_len : natural := c_digit_vec_len
+  ) return std_logic_vector;
+
+  function get_slice_range(
+    pos     : natural;
+    pos_len : natural := c_digit_vec_len
+  ) return std_logic_vector;
 
   procedure walk (
     signal   clk   : in std_logic;
@@ -34,6 +46,24 @@ package driver_tb_pkg is
 end package driver_tb_pkg;
 
 package body driver_tb_pkg is
+
+  function get_slice(
+    v       : std_logic_vector;
+    pos     : natural;
+    pos_len : natural := c_digit_vec_len
+  ) return std_logic_vector is
+  begin
+    return v((pos_len * pos + pos_len - 1) downto (pos_len * pos));
+  end function;
+
+  function get_slice_range(
+    pos     : natural;
+    pos_len : natural := c_digit_vec_len
+  ) return std_logic_vector is
+    variable v : std_logic_vector((pos_len * pos + pos_len - 1) downto (pos_len * pos)) := (others => '0');
+  begin
+    return v;
+  end function;
 
   procedure walk (
     signal   clk   : in std_logic;
