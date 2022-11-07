@@ -18,12 +18,12 @@ end entity;
 
 architecture tb of driver_top_tb is
 
-  signal dut_clk    : std_logic := '0';
-  signal dut_rst_n  : std_logic := '0';
-  signal dut_digits  : std_logic_vector((calc_digits_vec_len(c_number_of_digits) - 1) downto 0) := (others => '0');
-  signal dut_segments  : t_segments;
-  signal dut_digit_select : t_digit_select((c_number_of_digits - 1) downto 0);
-  signal dut_digit_select_stable : t_boolean_array((c_number_of_digits - 1) downto 0);
+  signal dut_clk                  : std_logic := '0';
+  signal dut_rst_n                : std_logic := '0';
+  signal dut_digits               : std_logic_vector((calc_digits_vec_len(c_number_of_digits) - 1) downto 0) := (others => '0');
+  signal dut_digit_select         : std_logic_vector((c_number_of_digits - 1) downto 0);
+  signal dut_digit_select_stable  : t_boolean_array((c_number_of_digits - 1) downto 0);
+  signal dut_segments             : t_segments;
 
 begin
 
@@ -31,7 +31,6 @@ begin
 
   uut : entity seg7_display_driver_lib.driver_top(rtl)
     generic map (
-      g_clock_frequency         => c_system_clock_in_hz,
       g_number_of_digits        => c_number_of_digits,
       g_digit_change_interval   => c_digit_change_interval,
       g_digit_on_off_ratio      => c_digit_on_off_ratio
@@ -40,12 +39,12 @@ begin
       i_clk           => dut_clk,
       i_rst_n         => dut_rst_n,
       i_digits        => dut_digits,
-      o_segments      => dut_segments,
-      o_digit_select  => dut_digit_select
+      o_digit_select  => dut_digit_select,
+      o_segments      => dut_segments
     );
   
   GEN_STABLE_CHECK: for index in 0 to c_number_of_digits - 1 generate
-    dut_digit_select_stable(index) <= dut_digit_select(index)'stable(c_digit_change_interval_ms);
+    dut_digit_select_stable(index) <= dut_digit_select(index)'stable(c_digit_change_interval_time);
   end generate GEN_STABLE_CHECK;
   
   main : process
@@ -119,7 +118,7 @@ begin
           end if;
         end loop;
         info("Wait for 1st digit change - using default ON/OFF ratio (100% ON)");
-        wait until dut_digit_select(1) = '1' for c_digit_change_interval_ms;
+        wait until dut_digit_select(1) = '1' for c_digit_change_interval_time;
         for digit_nmb in 0 to c_number_of_digits - 1 loop
           if digit_nmb = 1 then
             check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") after reset release"));
@@ -132,8 +131,8 @@ begin
         for step_nmb in 2 to 10 loop
           info("Verifying change no. " & integer'image((step_nmb)));
           wait for 1 ps;
-          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_ms;
-          check_equal(now - v_time_start, c_digit_change_interval_ms, result("for digit_select(" & integer'image(step_nmb mod c_number_of_digits) & ")"));
+          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_time;
+          check_equal(now - v_time_start, c_digit_change_interval_time, result("for digit_select(" & integer'image(step_nmb mod c_number_of_digits) & ")"));
           v_time_start := now;
           for digit_nmb in 0 to c_number_of_digits - 1 loop
             if digit_nmb = (step_nmb mod c_number_of_digits) then
@@ -158,7 +157,7 @@ begin
         walk(dut_clk, 1);
 
         info("Wait for digit change");
-        wait until dut_digit_select(1) = '1' for c_digit_change_interval_ms;
+        wait until dut_digit_select(1) = '1' for c_digit_change_interval_time;
         v_time_start := now;
         check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
         check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
@@ -173,8 +172,8 @@ begin
         for step_nmb in 2 to 10 loop
           info("Veifying change no. " & integer'image((step_nmb)));
           wait for 1 ps;
-          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_ms;
-          check_equal(now - v_time_start, c_digit_change_interval_ms, "duration check");
+          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_time;
+          check_equal(now - v_time_start, c_digit_change_interval_time, "duration check");
           v_time_start := now;
           display_segments(dut_segments);
           for digit_nmb in 0 to c_number_of_digits - 1 loop

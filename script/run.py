@@ -4,6 +4,7 @@ import sys
 import os
 
 # os.environ['VUNIT_SIMULATOR'] = 'ghdl'
+# os.environ['VUNIT_SIMULATOR'] = 'modelsim'
 # ROOT
 ROOT = Path(__file__).resolve().parents[1]
 # WORK

@@ -4,9 +4,6 @@ use ieee.numeric_std.all;
 
 package driver_pkg is
 
-  subtype t_digit is std_logic_vector(3 downto 0);
-  type t_digits is array (natural range <>) of t_digit;
-  type t_digit_select is array (natural range <>) of std_logic;
   type t_segments is record
     ca : std_logic;
     cb : std_logic;
@@ -18,9 +15,8 @@ package driver_pkg is
   end record;
   type t_digit_to_seg is array (16#0# to 16#F#) of t_segments;
 
-  constant c_clock_frequency_default : natural := 100_000_000;
   constant c_number_of_digits_default : natural := 4;
-  constant c_digit_change_interval_default : natural := 1;
+  constant c_digit_change_interval_default : natural := 100;
   constant c_digit_on_off_ratio_default : natural := 100;
   constant c_digit_to_seg : t_digit_to_seg := (
     -- seg:    A    B    C    D    E    F    G
@@ -44,7 +40,6 @@ package driver_pkg is
   constant c_digit_vec_len : natural := 4;
 
   function generics_verification(
-    clock_frequency       : natural;
     number_of_digits      : natural;
     digit_change_interval : natural;
     digit_on_off_ratio    : natural
@@ -59,15 +54,11 @@ end package driver_pkg;
 package body driver_pkg is
 
   function generics_verification(
-    clock_frequency       : natural;
     number_of_digits      : natural;
     digit_change_interval : natural;
     digit_on_off_ratio    : natural
   ) return boolean is
   begin
-    assert (clock_frequency > 0)
-      report "g_clock_frequency must be greater than 0!"
-      severity failure;
     assert (number_of_digits > 0)
       report "g_number_of_digits must be greater than 0!"
       severity failure;
