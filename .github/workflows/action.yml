@@ -11,6 +11,6 @@ jobs:
         run: pwd
       - uses: VUnit/vunit_action@master
         with:
-          cmd: seg7_display_driver_lib/script/run.py
+          cmd: script/run.py
       - name: Check workspace
         run: pwd
