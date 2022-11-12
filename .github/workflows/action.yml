@@ -11,6 +11,6 @@ jobs:
       - name: Run VUnit tests
         uses: VUnit/vunit_action@v0.1.0
         with:
-          cmd: scriptrun.py
+          run_file: script/run.py
       - name: Check workspace
         run: pwd
