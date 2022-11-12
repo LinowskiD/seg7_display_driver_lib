@@ -1,17 +1,16 @@
 name: VUnit Action
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Set up Git repository
+        uses: actions/checkout@v2
       - name: Check workspace
         run: pwd
-      - uses: VUnit/vunit_action@master
+      - name: Run VUnit tests
+        uses: VUnit/vunit_action@v0.1.0
         with:
-          working-directory: seg7_display_driver_ib
-          cmd: script/run.py
+          cmd: scriptrun.py
       - name: Check workspace
         run: pwd
