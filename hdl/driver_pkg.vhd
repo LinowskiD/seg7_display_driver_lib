@@ -4,6 +4,8 @@ use ieee.numeric_std.all;
 
 package driver_pkg is
 
+  constant c_number_of_digits_default : natural := 4;
+  type t_value is array (natural range <>) of std_logic_vector(c_number_of_digits_default - 1 downto 0);
   type t_segments is record
     ca : std_logic;
     cb : std_logic;
@@ -15,7 +17,6 @@ package driver_pkg is
   end record;
   type t_digit_to_seg is array (16#0# to 16#F#) of t_segments;
 
-  constant c_number_of_digits_default : natural := 4;
   constant c_digit_change_interval_default : natural := 100;
   constant c_digit_on_off_ratio_default : natural := 100;
   constant c_digit_to_seg : t_digit_to_seg := (
@@ -49,6 +50,11 @@ package driver_pkg is
     number_of_digits : natural
   ) return natural;
 
+  function calc_digit_change_interval(
+    system_clk_in_hz  : natural;
+    interval_time     : time
+  ) return natural;
+
 end package driver_pkg;
 
 package body driver_pkg is
@@ -76,6 +82,16 @@ package body driver_pkg is
   ) return natural is
   begin
     return c_digit_vec_len * number_of_digits;
+  end function;
+
+  function calc_digit_change_interval(
+    system_clk_in_hz  : natural;
+    interval_time     : time
+  ) return natural is
+    variable v_clk_period : time;
+  begin
+    v_clk_period := 1 sec / system_clk_in_hz;
+    return interval_time / v_clk_period;
   end function;
 
 end package body driver_pkg;
