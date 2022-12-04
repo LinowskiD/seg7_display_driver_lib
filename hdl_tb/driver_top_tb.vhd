@@ -150,153 +150,42 @@ begin
           end loop;
         end loop;
         info("===== TEST CASE FINISHED =====");
-      -- elsif run("test_0003_segment_change") then
-      --   info(separator);
-      --   info("TEST CASE: test_0003_segment_change");
-      --   info("TBD");
-      --   info(separator);
-      --   info("Disable reset");
-      --   dut_rst_n <= '1';
-      --   walk(dut_clk, 1);
-      --   info("update BCD");
-      --   dut_digits <= (X"0", X"1", X"2", X"3");
-      --   walk(dut_clk, 1);
-
-      --   info("Wait for digit change");
-      --   wait until dut_digit_select(1) = '1' for c_digit_change_interval_time;
-      --   v_time_start := now;
-      --   check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
-      --   check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
-      --   for digit_nmb in 2 to c_number_of_digits - 1 loop
-      --     check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
-      --   end loop;
-      --   for step_nmb in 2 to 10 loop
-      --     info("Veifying change no. " & integer'image((step_nmb)));
-      --     wait for 1 ps;
-      --     wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_time;
-      --     check_equal(now - v_time_start, c_digit_change_interval_time, "duration check");
-      --     v_time_start := now;
-      --     display_segments(dut_segments);
-      --     for digit_nmb in 0 to c_number_of_digits - 1 loop
-      --       if digit_nmb = step_nmb mod 4 then
-      --         check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
-      --       else
-      --         check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
-      --       end if;
-      --       check_equal(dut_digit_select_stable(digit_nmb), true, result("for stability stability check on digit_select(" & integer'image(digit_nmb)) & ")");
-      --     end loop;
-      --   end loop;
-      --   info("===== TEST CASE FINISHED =====");
-
-
-
-
-
-
-
-
-
-
-
-        -- check_equal(o_digit_select, '0', "TBD");
-        -- info("* REQ_SEG_0101");
-        -- check_equal(spy_dut_counter'length, c_preload_bit_size, "g_preload_bit_size should match passed value");
-    --   elsif run("test_0002_values_in_reset") then
-    --     info("* REQ_SEG_0020");
-    --     check_equal(dut_rst_n, '0', "Reset shall be active");
-    --     wait until rising_edge(dut_clk);
-    --     check_equal(dut_done, '0', "done signal shall be 0 in reset");
-    --     check_equal(dut_busy, '0', "busy signal shall be 0 in reset");
-    --     -- check_equal(spy_dut_counter, to_unsigned(0, c_preload_bit_size), "Internal counter shall be all zeroes");
-    --   elsif run("test_0003_busy_when_started") then
-    --     info("* REQ_SEG_0110");
-    --     info("* REQ_SEG_0131");
-    --     info("* REQ_SEG_0140");
-    --     info("Disabling reset");
-    --     dut_rst_n <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     info("Default state after reset");
-    --     check_equal(dut_done, '0', "done signal shall be 0 after reset");
-    --     check_equal(dut_busy, '0', "busy signal shall be 0 after reset");
-    --     info("Enabling counter");
-    --     dut_en <= '1';
-    --     -- check_equal(spy_dut_counter, to_unsigned(2**c_preload_bit_size, c_preload_bit_size), "Internal counter shall be all zeroes");
-    --     wait until rising_edge(dut_clk);
-    --     wait until rising_edge(dut_clk);
-    --     check_equal(dut_busy, '1', "busy signal shall be set to 1 after counter enabling");
-    --   elsif run("test_0004_count_from_10") then
-    --     info("* REQ_SEG_0130");
-    --     info("* REQ_SEG_0140");
-    --     info("* REQ_SEG_0150");
-    --     info("Disabling reset");
-    --     dut_rst_n <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     info("Preloading counter");
-    --     v_preload_int := 10;
-    --     v_preload := std_logic_vector(to_unsigned(v_preload_int, c_preload_bit_size));
-    --     dut_load_val <= v_preload;
-    --     dut_load <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     dut_load <= '0';
-    --     wait until rising_edge(dut_clk);
-    --     -- check_equal(spy_preload_val, std_logic_vector(to_unsigned(v_preload_int, c_preload_bit_size)), "Internal preload value shall be be equal to preloaded value");
-    --     info("Enabling counter");
-    --     dut_en <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     info("Since it is already enable, drive this signal low");
-    --     dut_en <= '0';
-    --     wait until rising_edge(dut_clk);
-    --     check_equal(dut_busy, '1', "busy signal shall be 1 exactly 1 clock cycle after counter has been enabled.");
-    --     wait until rising_edge(dut_done) for (v_preload_int + 1) * c_clk_period;
-    --     check_equal(dut_done, '1', "done signal shall be 1 when counter has finished.");
-    --     check_equal(dut_busy, '0', "busy signal shall be 0 when counter has finished.");
-    --   elsif run("test_0005_continouos_operation") then
-    --     info("* REQ_SEG_0151");
-    --     info("Disabling reset");
-    --     dut_rst_n <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     info("Preloading counter and enabling counter");
-    --     v_duration := 5;
-    --     v_preload_int := v_duration - 1;
-    --     v_preload := std_logic_vector(to_unsigned(v_preload_int, c_preload_bit_size));
-    --     dut_load_val <= v_preload;
-    --     dut_load <= '1';
-    --     dut_en <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     dut_load <= '0';
-    --     wait until rising_edge(dut_clk);
-    --     -- check_equal(spy_preload_val, std_logic_vector(to_unsigned(v_preload_int, c_preload_bit_size)), "Internal preload value shall be be equal to preloaded value");
-    --     check_equal(dut_busy, '1', "busy signal shall be 1 exactly 1 clock cycle after counter has been enabled.");
-    --     wait until rising_edge(dut_done) for (v_preload_int + 1) * c_clk_period;
-    --     check_equal(dut_done, '1', "done signal shall be 1 when counter has finished.");
-    --     check_equal(dut_busy, '0', "busy signal shall be 0 when counter has finished.");
-    --     info("Waiting for a new cycle to start automatically");
-    --     wait until rising_edge(dut_busy) for 2 * c_clk_period;
-    --     check_equal(dut_done, '0', "done signal shall be 0 when counter has started.");
-    --     check_equal(dut_busy, '1', "busy signal shall be 1 when counter has started.");
-    --     info("Wait for this cycle to end");
-    --     wait until rising_edge(dut_done) for (v_duration + 1) * c_clk_period;
-    --     check_equal(dut_done, '1', "done signal shall be 1 when counter has finished.");
-    --   elsif run("test_0006_clear_and_enable_again") then
-    --     info("* REQ_SEG_0121");
-    --     info("Disabling reset");
-    --     dut_rst_n <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     info("Preloading counter and enabling counter");
-    --     v_duration := 5;
-    --     dut_load_val <= std_logic_vector(to_unsigned(v_duration - 1, c_preload_bit_size));
-    --     dut_load <= '1';
-    --     dut_en <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     dut_load <= '0';
-    --     wait until rising_edge(dut_clk);
-    --     check_equal(dut_busy, '1', "busy signal shall be 1 exactly 1 clock cycle after counter has been enabled.");
-    --     info("Apply 'clear' signal to stop counter");
-    --     dut_clear <= '1';
-    --     wait until rising_edge(dut_clk);
-    --     dut_clear <= '0';
-    --     wait until rising_edge(dut_clk);
-    --     check_equal(dut_busy, '0', "busy signal shall be 0 when counter has been cleared");
+      elsif run("test_0003_segment_change") then
+        info(separator);
+        info("===== TEST CASE STARTED =====");
+        info("TEST CASE: test_0003_segment_change");
+        info(separator);
+        info("Verify if segments light in valid shapes");
+        info(separator);
+        info("Release reset and provide input");
+        dut_rst_n <= '1';
+        dut_value <= (X"0", X"1", X"2", X"3");
+        walk(dut_clk, 1);
+        info("Wait for digit change");
+        wait until dut_digit_select(1) = '1' for c_digit_change_interval_time;
+        v_time_start := now;
+        check_equal(dut_digit_select(0), '0', result("for first change of digit_select(0)"));
+        check_equal(dut_digit_select(1), '1', result("for first change of digit_select(1)"));
+        for digit_nmb in 2 to c_number_of_digits - 1 loop
+          check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+        end loop;
+        for step_nmb in 2 to 10 loop
+          info("Veifying change no. " & integer'image((step_nmb)));
+          wait for 1 ps;
+          wait until dut_digit_select(step_nmb mod c_number_of_digits) = '1' for c_digit_change_interval_time;
+          check_equal(now - v_time_start, c_digit_change_interval_time, "duration check");
+          v_time_start := now;
+          display_segments(dut_segments);
+          for digit_nmb in 0 to c_number_of_digits - 1 loop
+            if digit_nmb = step_nmb mod 4 then
+              check_equal(dut_digit_select(digit_nmb), '1', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+            else
+              check_equal(dut_digit_select(digit_nmb), '0', result("for digit_select(" & integer'image(digit_nmb) & ") when in operation"));
+            end if;
+            check_equal(dut_digit_select_stable(digit_nmb), true, result("for stability stability check on digit_select(" & integer'image(digit_nmb)) & ")");
+          end loop;
+        end loop;
+        info("===== TEST CASE FINISHED =====");
       end if;
     end loop;
     test_runner_cleanup(runner); -- Simulation ends here
