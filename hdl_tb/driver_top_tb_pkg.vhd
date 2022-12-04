@@ -14,12 +14,12 @@ package driver_tb_pkg is
   type t_boolean_array is array (natural range <>) of boolean;
   type t_char_matrix is array (natural range <>) of string;
   
-  constant c_system_clock_in_hz         : natural := 100_000_000;
-  constant c_clk_period                 : time := 10**3 * 1 ms / c_system_clock_in_hz;
-  constant c_number_of_digits           : natural := c_number_of_digits_default;
-  constant c_digit_change_interval      : natural := 100; -- clock cycles
-  constant c_digit_change_interval_time : time := c_clk_period * c_digit_change_interval; -- time
-  constant c_digit_on_off_ratio         : natural := c_digit_on_off_ratio_default;
+  constant c_system_clock_in_hz             : natural := 100_000_000;
+  constant c_clk_period                     : time := 10**3 * 1 ms / c_system_clock_in_hz;
+  constant c_number_of_digits               : natural := 4;
+  constant c_digit_change_interval_bit_size : natural := 8;
+  constant c_digit_change_interval          : natural := 100; -- clock cycles
+  constant c_digit_change_interval_time     : time := c_clk_period * c_digit_change_interval; -- time
 
   constant separator : string := "-------------------------------------------------------------------";
 
