@@ -7,9 +7,9 @@ use seg7_display_driver_lib.driver_pkg.all;
 
 entity driver_top is
   generic (
-    g_number_of_digits                : natural := c_number_of_digits_default;
+    g_number_of_digits                : natural;
     g_digit_change_interval_bit_size  : natural;
-    g_digit_change_interval           : natural -- in clock cycles
+    g_digit_change_interval           : natural
   );
   port (
     -- general
@@ -27,11 +27,11 @@ end entity driver_top;
 
 architecture rtl of driver_top is
 
-  -- constant c_safe: boolean := generics_verification(
-  --   g_number_of_digits,
-  --   g_digit_change_interval,
-  --   g_digit_on_off_ratio
-  -- );
+  constant c_safe: boolean := generics_verification(
+    g_number_of_digits,
+    g_digit_change_interval_bit_size,
+    g_digit_change_interval
+  );
 
   signal digit            : std_logic_vector((c_digit_vec_len - 1) downto 0);
   signal digit_nmb        : natural range 0 to (g_number_of_digits - 1);

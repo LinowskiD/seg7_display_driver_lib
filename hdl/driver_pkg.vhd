@@ -3,9 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package driver_pkg is
-
-  constant c_number_of_digits_default : natural := 4;
-  type t_value is array (natural range <>) of std_logic_vector(c_number_of_digits_default - 1 downto 0);
+  
   type t_segments is record
     ca : std_logic;
     cb : std_logic;
@@ -16,9 +14,6 @@ package driver_pkg is
     cg : std_logic;
   end record;
   type t_digit_to_seg is array (16#0# to 16#F#) of t_segments;
-
-  constant c_digit_change_interval_default : natural := 100;
-  constant c_digit_on_off_ratio_default : natural := 100;
   constant c_digit_to_seg : t_digit_to_seg := (
     -- seg:    A    B    C    D    E    F    G
     16#0# => ('1', '1', '1', '1', '1', '1', '0'),
@@ -39,59 +34,34 @@ package driver_pkg is
     16#F# => ('1', '0', '0', '0', '1', '1', '1')
   );
   constant c_digit_vec_len : natural := 4;
+  type t_value is array (natural range <>) of std_logic_vector(c_digit_vec_len - 1 downto 0);
 
   function generics_verification(
-    number_of_digits      : natural;
-    digit_change_interval : natural;
-    digit_on_off_ratio    : natural
+    number_of_digits                : natural;
+    digit_change_interval_bit_size  : natural;
+    digit_change_interval           : natural
   ) return boolean;
-
-  function calc_digits_vec_len(
-    number_of_digits : natural
-  ) return natural;
-
-  function calc_digit_change_interval(
-    system_clk_in_hz  : natural;
-    interval_time     : time
-  ) return natural;
 
 end package driver_pkg;
 
 package body driver_pkg is
 
   function generics_verification(
-    number_of_digits      : natural;
-    digit_change_interval : natural;
-    digit_on_off_ratio    : natural
+    number_of_digits                : natural;
+    digit_change_interval_bit_size  : natural;
+    digit_change_interval           : natural
   ) return boolean is
   begin
     assert (number_of_digits > 0)
       report "g_number_of_digits must be greater than 0!"
       severity failure;
+    assert (digit_change_interval_bit_size > 0)
+      report "g_digit_change_interval_bit_size must be greater than 0!"
+      severity failure;
     assert (digit_change_interval > 0)
       report "g_digit_change_interval must be greater than 0!"
       severity failure;
-    assert ((digit_on_off_ratio > 0) and (digit_on_off_ratio <= 100))
-      report "g_digit_on_off_ratio must be between 1 and 100!"
-      severity failure;
     return true;
-  end function;
-
-  function calc_digits_vec_len(
-    number_of_digits : natural
-  ) return natural is
-  begin
-    return c_digit_vec_len * number_of_digits;
-  end function;
-
-  function calc_digit_change_interval(
-    system_clk_in_hz  : natural;
-    interval_time     : time
-  ) return natural is
-    variable v_clk_period : time;
-  begin
-    v_clk_period := 1 sec / system_clk_in_hz;
-    return interval_time / v_clk_period;
   end function;
 
 end package body driver_pkg;
