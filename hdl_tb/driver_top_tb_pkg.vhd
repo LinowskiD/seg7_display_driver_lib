@@ -20,6 +20,11 @@ package driver_tb_pkg is
   constant c_digit_change_interval_bit_size : natural := 8;
   constant c_digit_change_interval          : natural := 100; -- clock cycles
   constant c_digit_change_interval_time     : time := c_clk_period * c_digit_change_interval; -- time
+  constant c_driver_conf                    : t_driver_conf := (
+    number_of_digits                => c_number_of_digits,
+    digit_change_interval_bit_size  => c_digit_change_interval_bit_size,
+    digit_change_interval           => c_digit_change_interval
+  );
 
   constant separator : string := "-------------------------------------------------------------------";
 

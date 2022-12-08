@@ -3,6 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 package driver_pkg is
+
+  type t_driver_conf is record
+    number_of_digits                : natural;
+    digit_change_interval_bit_size  : natural;
+    digit_change_interval           : natural;
+  end record;
   
   type t_segments is record
     ca : std_logic;

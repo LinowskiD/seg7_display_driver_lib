@@ -38,9 +38,7 @@ begin
 
   uut : entity seg7_display_driver_lib.driver_top(rtl)
     generic map (
-      g_number_of_digits                => c_number_of_digits,
-      g_digit_change_interval_bit_size  => c_digit_change_interval_bit_size,
-      g_digit_change_interval           => c_digit_change_interval
+      g_driver_conf => c_driver_conf
     )
     port map (
       i_clk           => dut_clk,
