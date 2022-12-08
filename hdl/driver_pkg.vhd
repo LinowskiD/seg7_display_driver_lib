@@ -43,9 +43,7 @@ package driver_pkg is
   type t_value is array (natural range <>) of std_logic_vector(c_digit_vec_len - 1 downto 0);
 
   function generics_verification(
-    number_of_digits                : natural;
-    digit_change_interval_bit_size  : natural;
-    digit_change_interval           : natural
+    driver_conf : t_driver_conf
   ) return boolean;
 
 end package driver_pkg;
@@ -53,19 +51,17 @@ end package driver_pkg;
 package body driver_pkg is
 
   function generics_verification(
-    number_of_digits                : natural;
-    digit_change_interval_bit_size  : natural;
-    digit_change_interval           : natural
+    driver_conf : t_driver_conf
   ) return boolean is
   begin
-    assert (number_of_digits > 0)
-      report "g_number_of_digits must be greater than 0!"
+    assert (driver_conf.number_of_digits > 0)
+      report "driver_conf.number_of_digits must be greater than 0!"
       severity failure;
-    assert (digit_change_interval_bit_size > 0)
-      report "g_digit_change_interval_bit_size must be greater than 0!"
+    assert (driver_conf.digit_change_interval_bit_size > 0)
+      report "driver_conf.digit_change_interval_bit_size must be greater than 0!"
       severity failure;
-    assert (digit_change_interval > 0)
-      report "g_digit_change_interval must be greater than 0!"
+    assert (driver_conf.digit_change_interval > 0)
+      report "driver_conf.digit_change_interval must be greater than 0!"
       severity failure;
     return true;
   end function;

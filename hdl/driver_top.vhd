@@ -25,11 +25,7 @@ end entity driver_top;
 
 architecture rtl of driver_top is
 
-  constant c_safe: boolean := generics_verification(
-    g_driver_conf.number_of_digits,
-    g_driver_conf.digit_change_interval_bit_size,
-    g_driver_conf.digit_change_interval
-  );
+  constant c_safe: boolean := generics_verification(g_driver_conf);
 
   signal digit            : std_logic_vector((c_digit_vec_len - 1) downto 0);
   signal digit_nmb        : natural range 0 to (g_driver_conf.number_of_digits - 1);
