@@ -28,17 +28,6 @@ package driver_tb_pkg is
 
   constant separator : string := "-------------------------------------------------------------------";
 
-  function get_slice(
-    v       : std_logic_vector;
-    pos     : natural;
-    pos_len : natural := c_digit_vec_len
-  ) return std_logic_vector;
-
-  function get_slice_range(
-    pos     : natural;
-    pos_len : natural := c_digit_vec_len
-  ) return std_logic_vector;
-
   procedure walk (
     signal   clk   : in std_logic;
     constant steps : natural := 1
@@ -51,24 +40,6 @@ package driver_tb_pkg is
 end package driver_tb_pkg;
 
 package body driver_tb_pkg is
-
-  function get_slice(
-    v       : std_logic_vector;
-    pos     : natural;
-    pos_len : natural := c_digit_vec_len
-  ) return std_logic_vector is
-  begin
-    return v((pos_len * pos + pos_len - 1) downto (pos_len * pos));
-  end function;
-
-  function get_slice_range(
-    pos     : natural;
-    pos_len : natural := c_digit_vec_len
-  ) return std_logic_vector is
-    variable v : std_logic_vector((pos_len * pos + pos_len - 1) downto (pos_len * pos)) := (others => '0');
-  begin
-    return v;
-  end function;
 
   procedure walk (
     signal   clk   : in std_logic;
