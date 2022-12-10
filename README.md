@@ -10,10 +10,6 @@ Recently added GHDL simulation support, mainly for github actions, but it is... 
 * Playground for creating design compatible with two target simulators: Modelsim and GHDL.
 * Experiment with Github actions for regression testing on git push.
 * Experiment with VHDL-2008 features as long they will not break GHDL compatibility.
-* Experiment with Test-Driven Development and how it will affect design choices along the way (kind of).
-* Experiment with different VHDL code styles, preferably to create a tailored ruleset similar to this from ALSE (just what SKA telescope FPGA team did).
-* Experiment with VHDL Style Guide (VSG) by jeremiah-c-leary to enforce proper VHDL style.
-* Experiment with different ways of documenting VHDL code, to find the one that "fits".
 
 ## Features
 * Handles displays consisting of defined number of digits. Currently max value is not defined.
@@ -28,7 +24,7 @@ Recently added GHDL simulation support, mainly for github actions, but it is... 
 * Modelsim.ini file visible in the PATH
 * Modelsim win32acoem folder added to the PATH
 * VUnit installed
-* Python 3.* installed
+* Python 3.* installed (for VUnit)
 * OPTIONAL: GHDL
 
 ## General architecture
@@ -50,16 +46,9 @@ Recently added GHDL simulation support, mainly for github actions, but it is... 
 | o_segments        | OUT       | std_logic_vector       | Controls digit's segments                        |
 | o_digit_select    | OUT       | std_logic_vector       | Controls which digit is enabled at this moment   |
 
-| Generic name                      | Type    | Description                                                 |
-|-----------------------------------|---------|-------------------------------------------------------------|
-| g_number_of_digits                | natural | Number of digits from which display is composed             |
-| g_digit_change_interval           | natural | Interval between digit change (in clock cycles)             |
-| g_digit_change_interval_bit_size  | natural | Bit size of g_digit_change_interval                         |
-
-## Detailed architecture
-TBD
-
-# Module level description
-
-TODO:
-* Code documentation available from github (Read the Docs?).
+Generics are passed with a single configuration generic, `g_driver_conf`. Configuration available within this record has been presented in the following table.
+| Generic name                   | Type    | Description                                     |
+| ------------------------------ | ------- | ----------------------------------------------- |
+| number_of_digits               | natural | Number of digits from which display is composed |
+| digit_change_interval          | natural | Interval between digit change (in clock cycles) |
+| digit_change_interval_bit_size | natural | Bit size of g_digit_change_interval             |
